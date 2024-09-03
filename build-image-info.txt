@@ -1,0 +1,2 @@
+BASE_IMAGE=node
+BASE_IMAGE_TAG=22-alpine3.19

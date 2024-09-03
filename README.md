@@ -6,12 +6,12 @@
     BASE_IMAGE=node
     BASE_IMAGE_TAG=22-alpine3.19
     ```
-*Note:* Image tag can updated by user to any available Node tag in Docker Hub.
+*Note:* Image tag can be updated by user to any available Node tag in Docker Hub.
 
-- Shell script: `build-image.sh` script which basically takes the above TXT file location as parameter, extracts the `$BASE_IMAGE` and the `$BASE_IMAGE_TAG` and builds the Dockerfile passing these two values as ARGs (Arguments).
+- Shell script: `build-image.sh` script which basically takes the above TXT file location as parameter, extracts the `$BASE_IMAGE` and the `$BASE_IMAGE_TAG` and builds the Dockerfile by passing these two values as ARGs (Arguments).
 
 ### Enhancements to Dockerfile:
-- Add a *HEALTHCHECK* instrunction to monitor the health of the application inside the container.
+- Add a *HEALTHCHECK* instruction to monitor the health of the application inside the container.
 - In case more stuff and complexity is added to the app, we can eventually consider using Multi-Stage builds.
 - We could copy just the NPM packages we need in order to reduce Image Size, e.g: `RUN npm ci --only=production`.
 

@@ -1,0 +1,72 @@
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app
+  namespace: app
+spec:
+  type: LoadBalancer
+  selector:
+    app: node-app
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+
+# Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+  namespace: app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+      labels:
+        app: node-app
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: node-app-container
+          image: node:14-alpine # specify the image registry along with updated tag (if changes)
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: ephemeral-storage
+              mountPath: /data
+              readOnly: true # readOnly filesystem
+      volumes:
+      - name: ephemeral-storage
+        emptyDir: {}
+
+# Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-app-ingress
+  namespace: app
+  labels:
+    app: node-app
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target:  /
+spec:
+  ingressClassName: rf-nginx
+  rules:
+    - host: https-node-app.com
+      http:
+        - path: /
+          pathType: Prefix 
+          backend:
+            service:
+              name: node-app
+              port:
+                number: 3000

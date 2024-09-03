@@ -1,0 +1,9 @@
+ARG BASE_IMAGE=node
+ARG BASE_IMAGE_TAG=14-alpine
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG}
+WORKDIR /app
+COPY . .
+RUN npm i
+EXPOSE 3000
+CMD ["npm", "start"]
